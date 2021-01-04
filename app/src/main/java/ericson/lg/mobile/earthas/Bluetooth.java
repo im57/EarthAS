@@ -17,8 +17,12 @@ import java.util.UUID;
 public class Bluetooth {
     private final static int BT_MESSAGE_READ = 2;
     private final static int BT_CONNECTING_STATUS = 3;
-    //final static UUID BT_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");    //phone to arduino
-    final static UUID BT_UUID = UUID.fromString("8CE255C0-200A-11E0-AC64-0800200C9A66");    //phone to phone
+    final static UUID BT_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");    //phone to arduino
+    //final static UUID BT_UUID = UUID.fromString("8CE255C0-200A-11E0-AC64-0800200C9A66");    //phone to phone
+    private UUID uuid;
+    //0000110a-0000-1000-8000-00805f9b34fb // phone
+    //0000111e-0000-1000-8000-00805f9b34fb // airpods
+
 
     private ConnectedBluetoothThread threadConnectedBluetooth;
     private BluetoothDevice bluetoothDevice;
@@ -74,10 +78,19 @@ public class Bluetooth {
             }
         }
         try {
-            bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(BT_UUID);
+            uuid = bluetoothDevice.getUuids()[0].getUuid();
+            Log.d("errrrrrrrrrrrrrrrrrrrrrrr", uuid.toString());
+            //bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(BT_UUID);
+            bluetoothAdapter.cancelDiscovery();
+            //bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
+            bluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(uuid);
             bluetoothSocket.connect();
+            Log.d("errrrrrrrrrrrrrrrrrr","connect err333333333");
+
             threadConnectedBluetooth = new ConnectedBluetoothThread(bluetoothSocket);
+            Log.d("errrrrrrrrrrrrrrrrrr","connect err444444444");
             threadConnectedBluetooth.start();
+            Log.d("errrrrrrrrrrrrrrrrrr","connect err5555555555");
             bluetoothHandler.obtainMessage(BT_CONNECTING_STATUS, 1, -1).sendToTarget();
         } catch (IOException e) {
             Log.d("errrrrrrrrrrrrrrrrrr","connect err");
