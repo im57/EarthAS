@@ -2,7 +2,10 @@
 
 package ericson.lg.mobile.earthas.ui.confusion;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -20,7 +24,17 @@ import ericson.lg.mobile.earthas.R;
 
 public class ConfusionAdapter extends RecyclerView.Adapter<ConfusionAdapter.ItemViewHolder> {
 
+    private Context context;
+    private Parsing mCallback;
+
+    private AlertDialog.Builder builder;
+
     private ArrayList<Confusion> confusions = new ArrayList<>();
+
+    ConfusionAdapter(Context context, Parsing listener){
+        this.context = context;
+        this.mCallback = listener;
+    }
 
     @NonNull
     @Override
@@ -65,9 +79,22 @@ public class ConfusionAdapter extends RecyclerView.Adapter<ConfusionAdapter.Item
                 @Override
                 public void onClick(View view) {
                     //int pos = getAdapterPosition();
-                    Toast.makeText(view.getContext(), tvName.getText()+" is "+tvType.getText(), Toast.LENGTH_SHORT).show();
-                    Log.d("Ddddddd",tvName.getText()+" is "+tvType.getText());
 
+                    builder = new AlertDialog.Builder(context);
+                    builder.setMessage(tvType.getText().toString() + " open")
+                            .setCancelable(false)
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    mCallback.parsingOpen(tvType.getText().toString());
+                                }
+                            })
+                            .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+
+                                }
+                            }).show();
                 }
             });
         }

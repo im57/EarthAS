@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -111,6 +112,7 @@ public class BluetoothActivity extends AppCompatActivity  {
                             public void onClick(DialogInterface dialog, int which) {
                                 if(bluetooth.connectSelectedDevice(listPairedDevices.get(i))){
                                     Toast.makeText(getApplicationContext(), listPairedDevices.get(i) + "에 연결됐습니다.", Toast.LENGTH_LONG).show();
+                                    view.setBackgroundColor(Color.YELLOW);
                                 }else{
                                     Toast.makeText(getApplicationContext(), "블루투스 연결 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
                                 }
@@ -215,10 +217,6 @@ public class BluetoothActivity extends AppCompatActivity  {
                     Log.d("eeeeeeeeeeeeee","found");
                     //검색한 블루투스 디바이스의 객체를 구한다
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    //데이터 저장
-                    //Map map = new HashMap();
-                    //map.put("name", device.getName()); //device.getName() : 블루투스 디바이스의 이름
-                    //map.put("address", device.getAddress()); //device.getAddress() : 블루투스 디바이스의 MAC 주소
                     listSearchDevices.add(device.getName());
                     //리스트 목록갱신
                     adapterSearch.notifyDataSetChanged();
@@ -286,6 +284,11 @@ public class BluetoothActivity extends AppCompatActivity  {
                 tvStatus.setText("블루투스 ON");
                 isBluetoothOn = true;
                 fabOnOff.setSupportBackgroundTintList(ColorStateList.valueOf(getColor(R.color.sub_color)));
+
+//                if(bluetooth.isConnect()){
+//                    //
+//                }
+
             } else {
                 tvStatus.setText("블루투스 OFF");
                 isBluetoothOn = false;
@@ -328,6 +331,13 @@ public class BluetoothActivity extends AppCompatActivity  {
         else{
             if (isEnabled) {
                 bluetooth.bluetoothOff();
+
+                listPairedDevices.clear();
+                adapterPaired.notifyDataSetChanged();
+
+                listSearchDevices.clear();
+                adapterSearch.notifyDataSetChanged();
+
                 Toast.makeText(getApplicationContext(), "블루투스가 비활성화 되었습니다.", Toast.LENGTH_SHORT).show();
                 isEnabled = false;
             }

@@ -85,19 +85,19 @@ public class Bluetooth {
             //bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
             bluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(uuid);
             bluetoothSocket.connect();
-            Log.d("errrrrrrrrrrrrrrrrrr","connect err333333333");
 
             threadConnectedBluetooth = new ConnectedBluetoothThread(bluetoothSocket);
-            Log.d("errrrrrrrrrrrrrrrrrr","connect err444444444");
             threadConnectedBluetooth.start();
-            Log.d("errrrrrrrrrrrrrrrrrr","connect err5555555555");
             bluetoothHandler.obtainMessage(BT_CONNECTING_STATUS, 1, -1).sendToTarget();
         } catch (IOException e) {
-            Log.d("errrrrrrrrrrrrrrrrrr","connect err");
             return false;
         }
 
         return true;
+    }
+
+    Boolean isConnect(){
+        return bluetoothSocket.isConnected();
     }
 
     //thread
@@ -117,7 +117,6 @@ public class Bluetooth {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
             } catch (IOException e) {
-                Log.d("errrrrrrrrrrrrrrrrrr","socket err");
                 //Toast.makeText(getApplicationContext(), "소켓 연결 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
             }
 
@@ -141,7 +140,6 @@ public class Bluetooth {
                         bluetoothHandler.obtainMessage(BT_MESSAGE_READ, bytes, -1, buffer).sendToTarget();
                     }
                 } catch (IOException e) {
-                    Log.d("errrrrrrrrrrrrrrrrrr","io err");
                     break;
                 }
             }
